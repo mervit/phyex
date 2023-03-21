@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
+        {% endblock %}
+
+        {% block javascripts %}
+            {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="navigation" class="col-3 col-lg-2">
+                    <h1><i class="bi bi-clipboard-pulse"></i> PhyEx</h1>
+                    <hr />
+                    <ul>
+                        <li class="active"><a href="#"><i class="bi bi-columns-gap"></i> {{ 'Dashboard'|trans }}</a></li>
+                        <li><a href="{{ path('app_evaluation') }}"><i class="bi bi-play"></i> {{ 'Start evaluation'|trans }}</a></li>
+                        <li><a href="#"><i class="bi bi-clipboard-check"></i> {{ 'Evaluations'|trans }}</a></li>
+                        <li><a href="#"><i class="bi bi-universal-access"></i> {{ 'Exercises'|trans }}</a></li>
+                    </ul>
+                    <hr />
+                    <ul>
+                        <li><a href="{{ path('app_logout') }}"><i class="bi bi-power"></i> {{ 'Logout'|trans }}</a></li>
+                    </ul>
+                </div>
+                <div id="content" class="col-9 col-lg-10">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

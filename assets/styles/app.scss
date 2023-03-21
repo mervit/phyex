@@ -1,0 +1,64 @@
+$border-radius: 0px;
+$primary: #2552a5;
+$card-border-color: #000;
+
+@import "~bootstrap/scss/bootstrap";
+@import "~bootstrap-icons/font/bootstrap-icons";
+
+@import "login";
+
+#navigation {
+    background: rgb(37,82,165);
+    background: linear-gradient(90deg, rgba(37,82,165,1) 0%, rgba(27,61,124,1) 100%);
+    min-height: 100vh;
+
+    h1 {
+        font-size: 32px;
+        margin: 20px;
+        color: #ddd
+    }
+    ul {
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+
+        li {
+            padding: 0px;
+            margin: 10px -15px 10px 0px;
+
+            a {
+                display: block;
+                padding: 10px 20px;
+                line-height: 24px;
+                text-decoration: none;
+                color: #ddd;
+
+                &:hover {
+                    color: #FFF;
+                }
+            }
+            &.active {
+                background-color: #FFF;
+                a {
+                    color: #000;
+                }
+            }
+        }
+    }
+    hr {
+        border-color: #6a86bb;
+    }
+}
+
+#content {
+    background-color: #FFF;
+    min-height: 500px;
+}
+
+.btn-primary {
+    color: #FFF;
+    &:hover {
+        color: #FFF;
+    }
+}
+
