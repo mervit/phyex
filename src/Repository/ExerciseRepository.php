@@ -39,6 +39,16 @@ class ExerciseRepository extends ServiceEntityRepository
         }
     }
 
+    public function getRandom(): Exercise {
+
+        return $this->createQueryBuilder('e')
+            ->setMaxResults(1)
+            ->orderBy('RAND()')
+            ->getQuery()
+            ->getOneOrNullResult();
+
+    }
+
 //    /**
 //     * @return Exercise[] Returns an array of Exercise objects
 //     */

@@ -3,13 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -32,6 +32,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
+
+    #[ORM\Column]
+    private ?int $birthYear = null;
+
+    #[ORM\Column]
+    private ?int $yearsOfExperience = null;
+
+    #[ORM\Column]
+    private ?bool $student = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $currentEducationLevel = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $academicYear = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $universityName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $facultyName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $studyProgram = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $fieldOfExperience = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $country = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $courseList = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $favoriteMethod = null;
+
+    #[ORM\Column]
+    private ?bool $stayInTouch = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $currentJobTitle = null;
 
     public function getId(): ?int
     {
@@ -114,4 +156,173 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getBirthYear(): ?int
+    {
+        return $this->birthYear;
+    }
+
+    public function setBirthYear(int $birthYear): self
+    {
+        $this->birthYear = $birthYear;
+
+        return $this;
+    }
+
+    public function getYearsOfExperience(): ?int
+    {
+        return $this->yearsOfExperience;
+    }
+
+    public function setYearsOfExperience(int $yearsOfExperience): self
+    {
+        $this->yearsOfExperience = $yearsOfExperience;
+
+        return $this;
+    }
+
+    public function isStudent(): ?bool
+    {
+        return $this->student;
+    }
+
+    public function setStudent(bool $student): self
+    {
+        $this->student = $student;
+
+        return $this;
+    }
+
+    public function getCurrentEducationLevel(): ?string
+    {
+        return $this->currentEducationLevel;
+    }
+
+    public function setCurrentEducationLevel(?string $currentEducationLevel): self
+    {
+        $this->currentEducationLevel = $currentEducationLevel;
+
+        return $this;
+    }
+
+    public function getAcademicYear(): ?int
+    {
+        return $this->academicYear;
+    }
+
+    public function setAcademicYear(?int $academicYear): self
+    {
+        $this->academicYear = $academicYear;
+
+        return $this;
+    }
+
+    public function getUniversityName(): ?string
+    {
+        return $this->universityName;
+    }
+
+    public function setUniversityName(?string $universityName): self
+    {
+        $this->universityName = $universityName;
+
+        return $this;
+    }
+
+    public function getFacultyName(): ?string
+    {
+        return $this->facultyName;
+    }
+
+    public function setFacultyName(?string $facultyName): self
+    {
+        $this->facultyName = $facultyName;
+
+        return $this;
+    }
+
+    public function getStudyProgram(): ?string
+    {
+        return $this->studyProgram;
+    }
+
+    public function setStudyProgram(?string $studyProgram): self
+    {
+        $this->studyProgram = $studyProgram;
+
+        return $this;
+    }
+
+    public function getFieldOfExperience(): ?string
+    {
+        return $this->fieldOfExperience;
+    }
+
+    public function setFieldOfExperience(string $fieldOfExperience): self
+    {
+        $this->fieldOfExperience = $fieldOfExperience;
+
+        return $this;
+    }
+
+    public function getCountry(): ?string
+    {
+        return $this->country;
+    }
+
+    public function setCountry(string $country): self
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getCourseList(): ?string
+    {
+        return $this->courseList;
+    }
+
+    public function setCourseList(?string $courseList): self
+    {
+        $this->courseList = $courseList;
+
+        return $this;
+    }
+
+    public function getFavoriteMethod(): ?string
+    {
+        return $this->favoriteMethod;
+    }
+
+    public function setFavoriteMethod(?string $favoriteMethod): self
+    {
+        $this->favoriteMethod = $favoriteMethod;
+
+        return $this;
+    }
+
+    public function isStayInTouch(): ?bool
+    {
+        return $this->stayInTouch;
+    }
+
+    public function setStayInTouch(bool $stayInTouch): self
+    {
+        $this->stayInTouch = $stayInTouch;
+
+        return $this;
+    }
+
+    public function getCurrentJobTitle(): ?string
+    {
+        return $this->currentJobTitle;
+    }
+
+    public function setCurrentJobTitle(?string $currentJobTitle): self
+    {
+        $this->currentJobTitle = $currentJobTitle;
+
+        return $this;
+    }
+    
 }

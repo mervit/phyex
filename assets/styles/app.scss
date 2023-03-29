@@ -55,6 +55,33 @@ $card-border-color: #000;
     min-height: 500px;
 }
 
+#evaluation {
+    .views {
+        .col-12, .col-4 {
+            height: 108px;
+
+            .btn {
+                height: 108px;
+                line-height: 90px;
+            }
+            .bi {
+                font-size: 48px;
+            }
+        }
+    }
+    .stars {
+        .star {
+            padding: 5px;
+            font-size: 24px;
+        }
+        &:hover {
+          a {
+              color: $success;
+          }
+        }
+    }
+}
+
 .btn-primary {
     color: #FFF;
     &:hover {

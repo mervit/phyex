@@ -19,8 +19,8 @@
                     <h1><i class="bi bi-clipboard-pulse"></i> PhyEx</h1>
                     <hr />
                     <ul>
-                        <li class="active"><a href="#"><i class="bi bi-columns-gap"></i> {{ 'Dashboard'|trans }}</a></li>
-                        <li><a href="{{ path('app_evaluation') }}"><i class="bi bi-play"></i> {{ 'Start evaluation'|trans }}</a></li>
+                        <li{% if app.request.attributes.get('_route') == 'app_home' %} class="active"{% endif %}><a href="{{ path('app_home') }}"><i class="bi bi-columns-gap"></i> {{ 'Dashboard'|trans }}</a></li>
+                        <li{% if app.request.attributes.get('_route') == 'app_evaluation' %} class="active"{% endif %}><a href="{{ path('app_evaluation') }}"><i class="bi bi-play"></i> {{ 'Start evaluation'|trans }}</a></li>
                         <li><a href="#"><i class="bi bi-clipboard-check"></i> {{ 'Evaluations'|trans }}</a></li>
                         <li><a href="#"><i class="bi bi-universal-access"></i> {{ 'Exercises'|trans }}</a></li>
                     </ul>

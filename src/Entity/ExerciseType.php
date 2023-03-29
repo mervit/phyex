@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ExerciseTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ExerciseTypeRepository::class)]
@@ -20,6 +21,18 @@ class ExerciseType
 
     #[ORM\OneToMany(mappedBy: 'exerciseType', targetEntity: ExerciseTypeParam::class, cascade: ["persist"])]
     private Collection $exerciseTypeParams;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $instructionVideo = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $defaultVideoView = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $code = null;
 
     public function __construct()
     {
@@ -69,6 +82,54 @@ class ExerciseType
                 $exerciseTypeParam->setExerciseType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getInstructionVideo(): ?string
+    {
+        return $this->instructionVideo;
+    }
+
+    public function setInstructionVideo(string $instructionVideo): self
+    {
+        $this->instructionVideo = $instructionVideo;
+
+        return $this;
+    }
+
+    public function getDefaultVideoView(): ?string
+    {
+        return $this->defaultVideoView;
+    }
+
+    public function setDefaultVideoView(string $defaultVideoView): self
+    {
+        $this->defaultVideoView = $defaultVideoView;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }

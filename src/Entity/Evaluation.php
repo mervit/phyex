@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EvaluationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EvaluationRepository::class)]
@@ -23,8 +24,11 @@ class Evaluation
     #[ORM\JoinColumn(nullable: false)]
     private ?Exercise $exercise = null;
 
-    #[ORM\OneToMany(mappedBy: 'evaluation', targetEntity: EvaluationParam::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'evaluation', targetEntity: EvaluationParam::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $evaluationParams;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $comment = null;
 
     public function __construct()
     {
@@ -86,6 +90,18 @@ class Evaluation
                 $evaluationParam->setEvaluation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

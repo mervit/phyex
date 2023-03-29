@@ -2239,6 +2239,11 @@ execa@^5.0.0:
     signal-exit "^3.0.3"
     strip-final-newline "^2.0.0"
 
+expose-loader@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/expose-loader/-/expose-loader-4.1.0.tgz#9c6d55d24e3ac0e5d50ee5dc7930d564fc475d48"
+  integrity sha512-oLAesnzerwDGGADzBMnu0LPqqnlVz6e2V9lTa+/4X6VeW9W93x/nJpw05WBrcIdbqXm/EdnEQpiVDFFiQXuNfg==
+
 express@^4.17.3:
   version "4.18.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.18.2.tgz#3fabe08296e930c796c19e3c516979386ba9fd59"
@@ -2761,6 +2766,11 @@ jest-worker@^29.1.2:
     jest-util "^29.4.3"
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
+
+jquery@^3.6.4:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.6.4.tgz#ba065c188142100be4833699852bf7c24dc0252f"
+  integrity sha512-v28EW9DWDFpzcD9O5iyJXg3R3+q+mET5JhnjJzQUZMHOv67bpSIHq81GEYpPNZHG+XXHsfSme3nxp/hndKEcsQ==
 
 js-tokens@^4.0.0:
   version "4.0.0"
