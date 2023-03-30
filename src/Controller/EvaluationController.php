@@ -27,53 +27,56 @@ class EvaluationController extends AbstractController
     ): Response
     {
 
-        $e = $exerciseRepository->find($request->get('form')['exercise']);
+        if( $request->get('form') ) {
 
-        $previousForm = $this->createFormBuilder();
+            $e = $exerciseRepository->find($request->get('form')['exercise']);
 
-        foreach($e->getExerciseType()->getExerciseTypeParams() as $param){
-            $previousForm->add('param' . $param->getId(), NumberType::class, [
-                'label' => $param->getName(),
-                'data' => '0',
-                'constraints' => [
-                    new EqualTo([1,2,3])
-                ]
-            ]);
-        }
+            $previousForm = $this->createFormBuilder();
 
-        $previousForm->add('submit', SubmitType::class, [
-            'label' => 'Send evaluation'
-        ]);
-
-        $previousForm->add('exercise', HiddenType::class, [
-            'data' => $e->getId()
-        ]);
-
-        $form = $previousForm->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $data = $form->getData();
-
-            $evaluation = new Evaluation();
-            $evaluation->setExercise($e);
-            $evaluation->setUser($this->getUser());
-
-            foreach($e->getExerciseType()->getExerciseTypeParams() as $param){
-                $evaluationParam = new EvaluationParam();
-                $evaluationParam->setExerciseTypeParam($param);
-                $evaluationParam->setValue($data['param' . $param->getId()]);
-                $evaluation->addEvaluationParam($evaluationParam);
+            foreach ($e->getExerciseType()->getExerciseTypeParams() as $param) {
+                $previousForm->add('param' . $param->getId(), NumberType::class, [
+                    'label' => $param->getName(),
+                    'data' => '0',
+                    'constraints' => [
+                        new EqualTo([1, 2, 3])
+                    ]
+                ]);
             }
 
-            $evaluationRepository->save($evaluation, true);
+            $previousForm->add('submit', SubmitType::class, [
+                'label' => 'Send evaluation'
+            ]);
 
-            $this->addFlash('success', 'Evaluation saved.');
+            $previousForm->add('exercise', HiddenType::class, [
+                'data' => $e->getId()
+            ]);
+
+            $form = $previousForm->getForm();
+
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $data = $form->getData();
+
+                $evaluation = new Evaluation();
+                $evaluation->setExercise($e);
+                $evaluation->setUser($this->getUser());
+
+                foreach ($e->getExerciseType()->getExerciseTypeParams() as $param) {
+                    $evaluationParam = new EvaluationParam();
+                    $evaluationParam->setExerciseTypeParam($param);
+                    $evaluationParam->setValue($data['param' . $param->getId()]);
+                    $evaluation->addEvaluationParam($evaluationParam);
+                }
+
+                $evaluationRepository->save($evaluation, true);
+
+                $this->addFlash('success', 'Evaluation saved.');
+
+            }
 
         }
-
         $exercise = $exerciseRepository->getRandom();
 
         $formBuilder = $this->createFormBuilder();

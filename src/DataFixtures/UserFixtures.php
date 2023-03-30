@@ -5,15 +5,20 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Factory;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture {
 
     private ObjectManager $manager;
+    private Generator $faker;
 
     public function __construct(private UserPasswordHasherInterface $hasher){}
 
     public function load(ObjectManager $manager) {
+
+        $this->faker = Factory::create();
 
         $this->manager = $manager;
 
@@ -29,6 +34,19 @@ class UserFixtures extends Fixture {
         $user->setEmail($email);
         $user->setPassword($this->hasher->hashPassword($user, $password));
         $user->setRoles($roles);
+        $user->setBirthYear(rand(1978,2005));
+        $user->setCountry($this->faker->country);
+        $user->setAcademicYear(rand(1, 5));
+        $user->setCourseList($this->faker->text);
+        $user->setCurrentEducationLevel($this->faker->title);
+        $user->setCurrentJobTitle($this->faker->title);
+        $user->setFacultyName($this->faker->name);
+        $user->setFavoriteMethod($this->faker->name);
+        $user->setStayInTouch(rand(0, 1) === 0);
+        $user->setYearsOfExperience(rand(1, 15));
+        $user->setUniversityName($this->faker->name);
+        $user->setStudent(rand(0, 1) === 0);
+        $user->setFieldOfExperience($this->faker->name);
         $this->manager->persist($user);
 
     }

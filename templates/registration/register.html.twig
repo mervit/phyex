@@ -17,7 +17,7 @@
 
     <div class="row align-items-center vh-100">
 
-        <div class="col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-4 ">
+        <div class="col-12 col-lg-8 offset-lg-2 ">
 
             <h1><i class="bi bi-clipboard-pulse"></i> PhyEx</h1>
 
@@ -31,11 +31,72 @@
 
                     {{ form_start(registrationForm) }}
 
-                        {{ form_row(registrationForm.email) }}
-
-                        {{ form_row(registrationForm.plainPassword, {
-                            label: 'Password'
-                        }) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.email) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.plainPassword, {
+                                    label: 'Password'
+                                }) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.birthYear) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.yearsOfExperience) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.student) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.currentEducationLevel) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.academicYear) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.universityName) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.facultyName) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.studyProgram) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.fieldOfExperience) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.country) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.courseList) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.favoriteMethod) }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.stayInTouch) }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form_row(registrationForm.currentJobTitle) }}
+                            </div>
+                        </div>
 
                         {{ form_row(registrationForm.agreeTerms) }}
 
@@ -44,7 +105,7 @@
                                 <button class="btn btn-success w-100" type="submit">{{ 'Register'|trans }}</button>
                             </div>
                             <div class="col-12 col-md-5 order-md-0">
-                                <a href="{{ path('app_login') }}" class="btn btn-primary w-100">{{ 'Login'|trans }}</a>
+                                <a href="{{ path('app_login') }}" class="btn btn-light w-100">{{ 'Login'|trans }}</a>
                             </div>
                         </div>
 

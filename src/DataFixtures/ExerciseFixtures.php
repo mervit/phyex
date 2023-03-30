@@ -31,6 +31,8 @@ class ExerciseFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
 
+        $videoViews = ['midLeft', 'midRight', 'front', 'side'];
+
         $this->videosDirectory = __DIR__ . '/videos';
         $availableVideos = glob($this->videosDirectory . '/*.{mp4}', GLOB_BRACE);
 
@@ -62,6 +64,14 @@ class ExerciseFixtures extends Fixture
                 $figurant = new Figurant();
                 $figurant->setFirstname($faker->firstName);
                 $figurant->setSurname($faker->lastName);
+                $figurant->setGender(rand(0, 1) === 0 ? 'Male': 'Female');
+                $figurant->setHeight(rand(154, 190));
+                $figurant->setWeight(rand(52, 102));
+                $figurant->setActiveHoursPerWeek(rand(2,7));
+                $figurant->setBirthYear(rand(1978, 2006));
+                $figurant->setOccupation($faker->name);
+                $figurant->setSittingTimePerDay(rand(1, 16));
+                $figurant->setStretchingFrequency(rand(1, 16));
                 $manager->persist($figurant);
                 $this->setReference($figurantReferenceName, $figurant);
             }
@@ -73,6 +83,20 @@ class ExerciseFixtures extends Fixture
 
                 $exerciseType = new ExerciseType();
                 $exerciseType->setName($exerciseTypeName);
+                $exerciseType->setDescription($faker->text);
+                $exerciseType->setDefaultVideoView($videoViews[rand(0,3)]);
+                $exerciseType->setCode($exerciseTypeName);
+
+                $randomVideo = $faker->randomElement($availableVideos);
+
+                // Copy video before upload (move)
+                $targetPath = str_replace($this->videosDirectory, sys_get_temp_dir(), $randomVideo);
+                $this->fs->copy($randomVideo, $targetPath, true);
+
+                // Upload Video
+                $previewVideoPath = $this->fileUploader->upload('videos', new File($targetPath));
+                $exerciseType->setInstructionVideo($previewVideoPath);
+
 
                 // Exercise type params
                 for ($p = 0; $p < rand(3, 5); $p++){
