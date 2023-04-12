@@ -24,10 +24,18 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class)
             ->add('birthYear', NumberType::class, [
-                'html5' => true
+                'html5' => true,
+                'attr' => [
+                    'min' => 1850,
+                    'max' => date('Y')
+                ]
             ])
             ->add('yearsOfExperience', NumberType::class, [
-                'html5' => true
+                'html5' => true,
+                'attr' => [
+                    'min' => 0,
+                    'max' => 50
+                ]
             ])
             ->add('student', CheckboxType::class, [
                 'required' => false
@@ -41,7 +49,11 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('academicYear', NumberType::class, [
                 'required' => false,
-                'html5' => true
+                'html5' => true,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 8
+                ]
             ])
             ->add('universityName', TextType::class)
             ->add('facultyName', TextType::class)
@@ -51,15 +63,25 @@ class RegistrationFormType extends AbstractType
             ->add('fieldOfExperience', TextType::class)
             ->add('country', ChoiceType::class, [
                 'choices' => [
-                    "Czechia" => 'czech'
+                    "Czechia" => 'czech',
+                    'Slovakia' => 'slovak',
+                    'Germany' => 'germany',
+                    'Austria' => 'austria',
+                    "Other" => 'other'
                 ]
             ])
-            ->add('courseList', TextareaType::class)
-            ->add('favoriteMethod', TextType::class)
+            ->add('courseList', TextareaType::class, [
+                'required' => false,
+            ])
+            ->add('favoriteMethod', TextType::class, [
+                'required' => false,
+            ])
             ->add('stayInTouch', CheckboxType::class, [
                 'required' => false
             ])
-            ->add('currentJobTitle', TextType::class)
+            ->add('currentJobTitle', TextType::class, [
+                'required' => false
+            ])
             ->add('agreeTerms', CheckboxType::class, [
                 'mapped' => false,
                 'constraints' => [

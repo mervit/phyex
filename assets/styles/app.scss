@@ -82,6 +82,14 @@ $card-border-color: #000;
     }
 }
 
+#dashboard {
+    .card {
+        .lh-1 {
+            line-height:  2.5rem;
+        }
+    }
+}
+
 .btn-primary {
     color: #FFF;
     &:hover {

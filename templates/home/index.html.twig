@@ -3,5 +3,85 @@
 {% block title %}{{ 'Dashboard'|trans }}{% endblock %}
 
 {% block body %}
+    <div id="dashboard">
+        <h1 class="mt-3 h2">{{ 'Dashboard'|trans }}</h1>
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title h5">{{ 'Evaluated exercises'|trans }}</h2>
+                        <div class="row fs-1">
+                            <div class="col-4">
+                                <i class="bi bi-clipboard-check text-primary"></i>
+                            </div>
+                            <div class="col-8">
+                                <strong>{{ numberOfEvaluations }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title h5">{{ 'Last evaluation time'|trans }}</h2>
+                        <div class="row fs-1">
+                            <div class="col-4">
+                                <i class="bi bi-clock text-primary"></i>
+                            </div>
+                            <div class="col-8">
+                                <strong class="fs-5">{{ lastEvaluation.created|ago }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title h5">{{ 'Evaluated exercies in last 7 days'|trans }}</h2>
+                        <div class="row fs-1">
+                            <div class="col-4">
+                                <i class="bi bi-path-check text-primary"></i>
+                            </div>
+                            <div class="col-8">
+                                <strong>{{ numberOfLastEvaluations }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-100 mt-3"><canvas id="acquisitions"></canvas></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    {{ parent() }}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.min.js" integrity="sha512-GCiwmzA0bNGVsp1otzTJ4LWQT2jjGJENLGyLlerlzckNI30moi2EQT0AfRI7fLYYYDKR+7hnuh35r3y1uJzugw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        const data = [
+            {% for d, c in chartData %}
+                { day: '{{d}}', count: {{c}} },
+            {% endfor %}
+        ];
+        const myChart = new Chart(
+            document.getElementById('acquisitions'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.day),
+                    datasets: [
+                        {
+                            label: 'Evaluations in days',
+                            data: data.map(row => row.count)
+                        }
+                    ]
+                }
+            }
+        );
+    </script>
 
 {% endblock %}

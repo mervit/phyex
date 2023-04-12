@@ -30,9 +30,13 @@ class Evaluation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $comment = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $created = null;
+
     public function __construct()
     {
         $this->evaluationParams = new ArrayCollection();
+        $this->created = new \DateTime();
     }
 
     public function getId(): ?int
@@ -102,6 +106,18 @@ class Evaluation
     public function setComment(?string $comment): self
     {
         $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): self
+    {
+        $this->created = $created;
 
         return $this;
     }

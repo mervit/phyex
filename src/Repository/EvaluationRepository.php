@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Evaluation;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,60 @@ class EvaluationRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getNumberOfUsersEvaluations(User $user){
+
+        return $this->createQueryBuilder('e')
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
+    }
+
+    public function getNumberOfUsersEvaluationsForLastDays(User $user, int $days){
+
+        return $this->createQueryBuilder('e')
+            ->where('e.user = :user')
+            ->andWhere('e.created > :dt')
+            ->setParameter('user', $user)
+            ->setParameter('dt', new \DateTime('-' . $days . ' days'))
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
+    }
+
+    public function getLastEvaluation(User $user){
+
+        return $this->createQueryBuilder('e')
+            ->where('e.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('e.created','DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+    }
+
+    public function getNumberOfEvaluationsInDay(User $user, \DateTime $datetime){
+
+        $dayStart = new \DateTime($datetime->format('Y-m-d') . ' midnight');
+        $dayEnd = new \DateTime($datetime->format('Y-m-d') . ' next day midnight');
+
+        return $this->createQueryBuilder('e')
+            ->where('e.user = :user')
+            ->andWhere('e.created > :ds')
+            ->andWhere('e.created < :de')
+            ->setParameter('user', $user)
+            ->setParameter('ds', $dayStart)
+            ->setParameter('de', $dayEnd)
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
     }
 
 //    /**

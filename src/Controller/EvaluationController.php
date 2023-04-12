@@ -35,7 +35,6 @@ class EvaluationController extends AbstractController
 
             foreach ($e->getExerciseType()->getExerciseTypeParams() as $param) {
                 $previousForm->add('param' . $param->getId(), NumberType::class, [
-                    'label' => $param->getName(),
                     'data' => '0',
                     'constraints' => [
                         new EqualTo([1, 2, 3])
@@ -43,22 +42,17 @@ class EvaluationController extends AbstractController
                 ]);
             }
 
-            $previousForm->add('submit', SubmitType::class, [
-                'label' => 'Send evaluation'
-            ]);
+            $previousForm->add('submit', SubmitType::class);
 
-            $previousForm->add('exercise', HiddenType::class, [
-                'data' => $e->getId()
-            ]);
+            $previousForm->add('exercise', HiddenType::class);
 
             $form = $previousForm->getForm();
 
             $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->isSubmitted()) {
 
                 $data = $form->getData();
-
                 $evaluation = new Evaluation();
                 $evaluation->setExercise($e);
                 $evaluation->setUser($this->getUser());
