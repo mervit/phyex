@@ -56,6 +56,42 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
+    public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
+
+        $qb = $this->createQueryBuilder('u');
+
+        if($criteria){
+            $qb->addCriteria($criteria);
+        }
+
+        if($orderBy){
+            foreach ($orderBy as $obk => $obv){
+                $qb->addOrderBy($obk, $obv);
+            }
+        }
+
+        if($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        if($offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    public function countByCriteria($criteria){
+
+        return $this->createQueryBuilder('u')
+            ->addCriteria($criteria)
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

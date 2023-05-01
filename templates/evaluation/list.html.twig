@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Evaluations'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="mt-3 h2">{{ 'Evaluations'|trans }}</h1>
+    {{ form_start(filter_form) }}
+    <div class="row">
+        <div class="col-2">
+            {{ form_row(filter_form.created_from) }}
+        </div>
+        <div class="col-2">
+            {{ form_row(filter_form.created_to) }}
+        </div>
+        <div class="col-3">
+            {{ form_row(filter_form.user) }}
+        </div>
+        <div class="col-3">
+            {{ form_row(filter_form.exerciseType) }}
+        </div>
+        <div class="col-2 pt-4 text-end">
+            {{ form_widget(filter_form.submit) }}
+        </div>
+    </div>
+    {{ form_end(filter_form) }}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>{% if app.request.get('order_by') == 'e.id' %}
+                    {% if app.request.get('order_direction') == 'asc' %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'e.id', 'order_direction': 'desc'})) }}"># <i class="bi bi-chevron-up"></i></a>
+                    {% else %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'none', 'order_direction': 'none'})) }}"># <i class="bi bi-chevron-down"></i></a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'e.id', 'order_direction': 'asc'})) }}">#</a>
+                {% endif %}
+            </th>
+            <th>{% if app.request.get('order_by') == 'e.created' %}
+                    {% if app.request.get('order_direction') == 'asc' %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'e.created', 'order_direction': 'desc'})) }}">{{ 'Date and time'|trans }} <i class="bi bi-chevron-up"></i></a>
+                    {% else %}
+                        <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'none', 'order_direction': 'none'})) }}">{{ 'Date and time'|trans }} <i class="bi bi-chevron-down"></i></a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'order_by': 'e.created', 'order_direction': 'asc'})) }}">{{ 'Date and time'|trans }}</a>
+                {% endif %}
+            </th>
+            <th>{{ 'User'|trans }}</th>
+            <th>{{ 'Exercise'|trans }}</th>
+            <th>{{ 'Comment'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for evaluation in evaluations %}
+            <tr>
+                <td>{{ evaluation.id }}</td>
+                <td>{{ evaluation.created|date('d.m.Y H:i:s') }}</td>
+                <td>{{ evaluation.user.email }}</td>
+                <td>{{ evaluation.exercise.exerciseType.name }}</td>
+                <td>
+                    {% if evaluation.comment|length > 35 %}
+                    {{ evaluation.comment|slice(0, 35) }}... <a href="#" data-toggle="modal" data-target="#commentModal" data-comment="{{ evaluation.comment }}">{{ 'Show more'|trans }} &raquo;</a>
+                    {% else %}
+                        {{ evaluation.comment }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% if page != 1 %}
+                    <li class="page-item"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': 1})) }}">{{ 'First'|trans }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': page - 1})) }}">{{ 'Previous'|trans }}</a></li>
+                {% endif %}
+                {% for p in 1..max_page  %}
+                    {% if p == page %}
+                        <li class="page-item active" aria-current="page"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': p})) }}">{{ p }}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': p})) }}">{{ p }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if page != max_page %}
+                    <li class="page-item"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': page + 1})) }}">{{ 'Next'|trans }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{{ path(app.request.attributes.get('_route'), app.request.get('_route_params')|merge({'page': max_page})) }}">{{ 'Last'|trans }}</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="commentModalLabel">{{ 'Comment'|trans }}</h1>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'Close'|trans }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    {{ parent() }}
+
+    <script>
+
+        const tooltipTriggerList = document.querySelectorAll('[data-tooltip]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+        $('#commentModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var comment = button.data('comment');
+            var modal = $(this);
+            modal.find('.modal-body').text(comment);
+        });
+
+    </script>
+
+{% endblock %}

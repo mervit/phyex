@@ -49,6 +49,42 @@ class ExerciseRepository extends ServiceEntityRepository
 
     }
 
+    public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
+
+        $qb = $this->createQueryBuilder('e');
+
+        if($criteria){
+            $qb->addCriteria($criteria);
+        }
+
+        if($orderBy){
+            foreach ($orderBy as $obk => $obv){
+                $qb->addOrderBy($obk, $obv);
+            }
+        }
+
+        if($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        if($offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    public function countByCriteria($criteria){
+
+        return $this->createQueryBuilder('e')
+            ->addCriteria($criteria)
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
+    }
+
 //    /**
 //     * @return Exercise[] Returns an array of Exercise objects
 //     */

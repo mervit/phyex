@@ -38,7 +38,7 @@ class ExerciseFixtures extends Fixture
 
         // Clear target directory
         $this->fs = new Filesystem();
-        $this->fs->remove( glob($this->parameterBag->get('uploads_directory') . '/exercise/*') );
+        $this->fs->remove( glob($this->parameterBag->get('uploads_directory') . '/videos/*') );
 
         // Inicialize fakers
         $faker = Factory::create();
@@ -51,7 +51,7 @@ class ExerciseFixtures extends Fixture
         }
 
         $exercises = array_unique($exercises);
-
+        $i = 1;
         foreach($exercises as $exerciseName){
 
             $exerciseNameParts = explode('_', $exerciseName);
@@ -122,6 +122,8 @@ class ExerciseFixtures extends Fixture
             $exercise->setExerciseType($exerciseType);
             $exercise->setDatetime(new \Datetime(date(DATE_ATOM, $exerciseNameParts[2])));
             $manager->persist($exercise);
+            $this->setReference('Exercise_' . $i, $exercise);
+            $i++;
 
         }
 

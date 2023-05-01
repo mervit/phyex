@@ -34,7 +34,7 @@ class ExerciseTypeFixtures extends Fixture
 
         // Clear target directory
         $fs = new Filesystem();
-        $fs->remove( glob($this->parameterBag->get('uploads_directory') . '/exercise/*') );
+        $fs->remove( glob($this->parameterBag->get('uploads_directory') . '/instruction_videos/*') );
 
         for ($i = 0; $i < self::LENGTH; $i++) {
 
@@ -51,7 +51,7 @@ class ExerciseTypeFixtures extends Fixture
             $fs->copy($randomVideo, $targetPath, true);
 
             // Upload Video
-            $previewVideoPath = $this->fileUploader->upload('videos', new File($targetPath));
+            $previewVideoPath = $this->fileUploader->upload('instruction_videos', new File($targetPath));
             $exerciseType->setInstructionVideo($previewVideoPath);
 
             // Params

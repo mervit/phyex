@@ -94,6 +94,45 @@ class EvaluationRepository extends ServiceEntityRepository
 
     }
 
+
+    public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
+
+        $qb = $this->createQueryBuilder('e');
+
+        if($criteria){
+            $qb->innerJoin('e.exercise', 'exercise');
+            $qb->addCriteria($criteria);
+        }
+
+        if($orderBy){
+            foreach ($orderBy as $obk => $obv){
+                $qb->addOrderBy($obk, $obv);
+            }
+        }
+
+        if($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        if($offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+
+    }
+
+    public function countByCriteria($criteria){
+
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.exercise', 'exercise')
+            ->addCriteria($criteria)
+            ->select('COUNT(e.id)')
+            ->getQuery()
+            ->getOneOrNullResult()[1];
+
+    }
+
 //    /**
 //     * @return Evaluation[] Returns an array of Evaluation objects
 //     */

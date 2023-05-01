@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'Users'|trans }}{% endblock %}
+
+{% block body %}
+    <h1 class="mt-3 h2">{{ 'Edit user'|trans }} #{{ user.id }}</h1>
+    {{ form(form) }}
+{% endblock %}

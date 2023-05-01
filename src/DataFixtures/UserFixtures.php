@@ -14,6 +14,8 @@ class UserFixtures extends Fixture {
     private ObjectManager $manager;
     private Generator $faker;
 
+    const LENGTH = 45;
+
     public function __construct(private UserPasswordHasherInterface $hasher){}
 
     public function load(ObjectManager $manager) {
@@ -23,7 +25,11 @@ class UserFixtures extends Fixture {
         $this->manager = $manager;
 
         // Create Administrator
-        $this->createUser('admin', 'password', ['ROLE_ADMIN']);
+        $this->createUser('admin', 'password', ['ROLE_ADMIN', 'ROLE_ADMIN_USERS', 'ROLE_ADMIN_EVALUATIONS', 'ROLE_ADMIN_EXERCISES', 'ROLE_ADMIN_EXERCISE_TYPES']);
+
+        for ($i = 0; $i < self::LENGTH; $i++) {
+            $this->addReference('User_' . $i, $this->createUser($this->faker->email, 'password', []));
+        }
 
         $this->manager->flush();
     }
@@ -48,6 +54,7 @@ class UserFixtures extends Fixture {
         $user->setStudent(rand(0, 1) === 0);
         $user->setFieldOfExperience($this->faker->name);
         $this->manager->persist($user);
+        return $user;
 
     }
 

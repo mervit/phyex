@@ -34,6 +34,9 @@ class ExerciseType
     #[ORM\Column(length: 255)]
     private ?string $code = null;
 
+    #[ORM\Column]
+    private ?bool $deleted = false;
+
     public function __construct()
     {
         $this->exerciseTypeParams = new ArrayCollection();
@@ -130,6 +133,18 @@ class ExerciseType
     public function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

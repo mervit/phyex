@@ -75,6 +75,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentJobTitle = null;
 
+    #[ORM\Column]
+    private ?bool $deleted = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -321,6 +324,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCurrentJobTitle(?string $currentJobTitle): self
     {
         $this->currentJobTitle = $currentJobTitle;
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

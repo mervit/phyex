@@ -30,7 +30,7 @@
                                 <i class="bi bi-clock text-primary"></i>
                             </div>
                             <div class="col-8">
-                                <strong class="fs-5">{{ lastEvaluation.created|ago }}</strong>
+                                <strong class="fs-5">{{ lastEvaluation ? lastEvaluation.created|ago : '?' }}</strong>
                             </div>
                         </div>
                     </div>
