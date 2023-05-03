@@ -80,31 +80,35 @@ class EvaluationController extends AbstractController
             }
 
         }
-        $exercise = $exerciseRepository->getRandom();
+        $exercise = $exerciseRepository->getRandom($this->getUser());
 
         $formBuilder = $this->createFormBuilder();
 
-        foreach($exercise->getExerciseType()->getExerciseTypeParams() as $param){
-            $formBuilder->add('param' . $param->getId(), NumberType::class, [
-                'label' => $param->getName(),
-                'data' => '0',
-                'constraints' => [
-                    new EqualTo([1,2,3])
-                ]
+        if($exercise) {
+
+            foreach ($exercise->getExerciseType()->getExerciseTypeParams() as $param) {
+                $formBuilder->add('param' . $param->getId(), NumberType::class, [
+                    'label' => $param->getName(),
+                    'data' => '0',
+                    'constraints' => [
+                        new EqualTo([1, 2, 3])
+                    ]
+                ]);
+            }
+
+            $formBuilder->add('exercise', HiddenType::class, [
+                'data' => $exercise->getId()
             ]);
+
+            $formBuilder->add('comment', TextareaType::class, [
+                'required' => false
+            ]);
+
+            $formBuilder->add('submit', SubmitType::class, [
+                'label' => 'Send evaluation'
+            ]);
+
         }
-
-        $formBuilder->add('exercise', HiddenType::class, [
-            'data' => $exercise->getId()
-        ]);
-
-        $formBuilder->add('comment', TextareaType::class, [
-            'required' => false
-        ]);
-
-        $formBuilder->add('submit', SubmitType::class, [
-            'label' => 'Send evaluation'
-        ]);
 
         return $this->render('evaluation/index.html.twig', [
             'exercise' => $exercise,

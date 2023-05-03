@@ -15,17 +15,16 @@ class Figurant
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $firstname = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nickname = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $surname = null;
+    private bool $publicVideoConfirmation;
 
     #[ORM\OneToMany(mappedBy: 'figurant', targetEntity: Exercise::class, orphanRemoval: true)]
     private Collection $exercises;
 
     #[ORM\Column]
-    private ?int $birthYear = null;
+    private ?string $age;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $gender = null;
@@ -40,13 +39,16 @@ class Figurant
     private ?string $activeHoursPerWeek = null;
 
     #[ORM\Column(length: 255)]
+    private ?string $sportHoursPerWeek = null;
+
+    #[ORM\Column(length: 255)]
     private ?string $stretchingFrequency = null;
 
     #[ORM\Column]
-    private ?int $weight = null;
+    private ?string $weight = null;
 
     #[ORM\Column]
-    private ?int $height = null;
+    private ?string $height = null;
 
     public function __construct()
     {
@@ -56,30 +58,6 @@ class Figurant
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getFirstname(): ?string
-    {
-        return $this->firstname;
-    }
-
-    public function setFirstname(string $firstname): self
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getSurname(): ?string
-    {
-        return $this->surname;
-    }
-
-    public function setSurname(string $surname): self
-    {
-        $this->surname = $surname;
-
-        return $this;
     }
 
     /**
@@ -112,99 +90,180 @@ class Figurant
         return $this;
     }
 
-    public function getBirthYear(): ?int
+    /**
+     * @return string|null
+     */
+    public function getNickname(): ?string
     {
-        return $this->birthYear;
+        return $this->nickname;
     }
 
-    public function setBirthYear(int $birthYear): self
+    /**
+     * @param string|null $nickname
+     */
+    public function setNickname(?string $nickname): void
     {
-        $this->birthYear = $birthYear;
-
-        return $this;
+        $this->nickname = $nickname;
     }
 
+    /**
+     * @return bool
+     */
+    public function isPublicVideoConfirmation(): bool
+    {
+        return $this->publicVideoConfirmation;
+    }
+
+    /**
+     * @param bool $publicVideoConfirmation
+     */
+    public function setPublicVideoConfirmation(bool $publicVideoConfirmation): void
+    {
+        $this->publicVideoConfirmation = $publicVideoConfirmation;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAge(): ?string
+    {
+        return $this->age;
+    }
+
+    /**
+     * @param string|null $age
+     */
+    public function setAge(?string $age): void
+    {
+        $this->age = $age;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getGender(): ?string
     {
         return $this->gender;
     }
 
-    public function setGender(?string $gender): self
+    /**
+     * @param string|null $gender
+     */
+    public function setGender(?string $gender): void
     {
         $this->gender = $gender;
-
-        return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getOccupation(): ?string
     {
         return $this->occupation;
     }
 
-    public function setOccupation(string $occupation): self
+    /**
+     * @param string|null $occupation
+     */
+    public function setOccupation(?string $occupation): void
     {
         $this->occupation = $occupation;
-
-        return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getSittingTimePerDay(): ?string
     {
         return $this->sittingTimePerDay;
     }
 
-    public function setSittingTimePerDay(string $sittingTimePerDay): self
+    /**
+     * @param string|null $sittingTimePerDay
+     */
+    public function setSittingTimePerDay(?string $sittingTimePerDay): void
     {
         $this->sittingTimePerDay = $sittingTimePerDay;
-
-        return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getActiveHoursPerWeek(): ?string
     {
         return $this->activeHoursPerWeek;
     }
 
-    public function setActiveHoursPerWeek(string $activeHoursPerWeek): self
+    /**
+     * @param string|null $activeHoursPerWeek
+     */
+    public function setActiveHoursPerWeek(?string $activeHoursPerWeek): void
     {
         $this->activeHoursPerWeek = $activeHoursPerWeek;
-
-        return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getSportHoursPerWeek(): ?string
+    {
+        return $this->sportHoursPerWeek;
+    }
+
+    /**
+     * @param string|null $sportHoursPerWeek
+     */
+    public function setSportHoursPerWeek(?string $sportHoursPerWeek): void
+    {
+        $this->sportHoursPerWeek = $sportHoursPerWeek;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getStretchingFrequency(): ?string
     {
         return $this->stretchingFrequency;
     }
 
-    public function setStretchingFrequency(string $stretchingFrequency): self
+    /**
+     * @param string|null $stretchingFrequency
+     */
+    public function setStretchingFrequency(?string $stretchingFrequency): void
     {
         $this->stretchingFrequency = $stretchingFrequency;
-
-        return $this;
     }
 
-    public function getWeight(): ?int
+    /**
+     * @return string|null
+     */
+    public function getWeight(): ?string
     {
         return $this->weight;
     }
 
-    public function setWeight(int $weight): self
+    /**
+     * @param string|null $weight
+     */
+    public function setWeight(?string $weight): void
     {
         $this->weight = $weight;
-
-        return $this;
     }
 
-    public function getHeight(): ?int
+    /**
+     * @return string|null
+     */
+    public function getHeight(): ?string
     {
         return $this->height;
     }
 
-    public function setHeight(int $height): self
+    /**
+     * @param string|null $height
+     */
+    public function setHeight(?string $height): void
     {
         $this->height = $height;
-
-        return $this;
     }
+
 }

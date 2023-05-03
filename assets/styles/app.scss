@@ -97,3 +97,7 @@ $card-border-color: #000;
     }
 }
 
+label.required:before {
+    content: "* ";
+    color: red;
+}

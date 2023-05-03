@@ -62,16 +62,17 @@ class ExerciseFixtures extends Fixture
                 $figurant = $this->getReference($figurantReferenceName);
             } else {
                 $figurant = new Figurant();
-                $figurant->setFirstname($faker->firstName);
-                $figurant->setSurname($faker->lastName);
+                $figurant->setNickname($faker->firstName);
                 $figurant->setGender(rand(0, 1) === 0 ? 'Male': 'Female');
                 $figurant->setHeight(rand(154, 190));
                 $figurant->setWeight(rand(52, 102));
                 $figurant->setActiveHoursPerWeek(rand(2,7));
-                $figurant->setBirthYear(rand(1978, 2006));
+                $figurant->setAge(rand(18, 75));
                 $figurant->setOccupation($faker->name);
                 $figurant->setSittingTimePerDay(rand(1, 16));
                 $figurant->setStretchingFrequency(rand(1, 16));
+                $figurant->setPublicVideoConfirmation(rand(0,1) === 0);
+                $figurant->setSportHoursPerWeek(rand(2,7));
                 $manager->persist($figurant);
                 $this->setReference($figurantReferenceName, $figurant);
             }

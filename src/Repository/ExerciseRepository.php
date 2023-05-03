@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Exercise;
+use App\Entity\ExerciseType;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,11 +41,16 @@ class ExerciseRepository extends ServiceEntityRepository
         }
     }
 
-    public function getRandom(): Exercise {
+    public function getRandom(User $user): Exercise {
 
         return $this->createQueryBuilder('e')
             ->setMaxResults(1)
-            ->orderBy('RAND()')
+            ->addSelect('(SELECT COUNT(uev.id) FROM App\Entity\Evaluation AS uev WHERE uev.user = :user AND uev.exercise = e) AS HIDDEN num_users_evaluations')
+            ->addSelect('(SELECT COUNT(ev.id) FROM App\Entity\Evaluation AS ev WHERE ev.exercise = e) AS HIDDEN num_evaluations')
+            ->addOrderBy('num_users_evaluations', 'ASC')
+            ->addOrderBy('num_evaluations', 'ASC')
+            ->addOrderBy('RAND()')
+            ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult();
 
@@ -83,6 +90,15 @@ class ExerciseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()[1];
 
+    }
+
+    public function countByExerciseType(ExerciseType $exerciseType) {
+        return $this->createQueryBuilder('ex')
+            ->select('COUNT(ex.id)')
+            ->where('ex.exerciseType = :exerciseType')
+            ->setParameter('exerciseType', $exerciseType)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

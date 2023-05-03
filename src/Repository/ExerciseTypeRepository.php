@@ -42,6 +42,7 @@ class ExerciseTypeRepository extends ServiceEntityRepository
     public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
 
         $qb = $this->createQueryBuilder('et');
+        $qb->addSelect('(SELECT COUNT(ex.id) FROM App\\Entity\\Exercise AS ex WHERE ex.exerciseType = et) AS exerciseCount');
 
         if($criteria){
             $qb->addCriteria($criteria);

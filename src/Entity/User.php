@@ -19,7 +19,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    private string $email;
 
     #[ORM\Column]
     private array $roles = [];
@@ -28,22 +28,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    private ?string $password = null;
+    private string $password;
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVerified = false;
 
     #[ORM\Column]
-    private ?int $birthYear = null;
+    private int $birthYear;
 
-    #[ORM\Column]
-    private ?int $yearsOfExperience = null;
+    #[ORM\Column(length: 255)]
+    private string $country;
 
-    #[ORM\Column]
-    private ?bool $student = null;
+    #[ORM\Column(length: 255)]
+    private string $completedEducationLevel;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $completedEducationUniversityName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $completedEducationFacultyName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentEducationLevel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $studyProgram = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $academicYear = null;
@@ -54,14 +63,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $facultyName = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $studyProgram = null;
-
     #[ORM\Column(length: 255)]
     private ?string $fieldOfExperience = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $country = null;
+    #[ORM\Column]
+    private ?int $yearsOfExperience = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $courseList = null;
@@ -69,11 +75,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $favoriteMethod = null;
 
-    #[ORM\Column]
-    private ?bool $stayInTouch = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $currentJobTitle = null;
+
+    #[ORM\Column]
+    private ?bool $stayInTouch = null;
 
     #[ORM\Column]
     private ?bool $deleted = false;
@@ -180,18 +186,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setYearsOfExperience(int $yearsOfExperience): self
     {
         $this->yearsOfExperience = $yearsOfExperience;
-
-        return $this;
-    }
-
-    public function isStudent(): ?bool
-    {
-        return $this->student;
-    }
-
-    public function setStudent(bool $student): self
-    {
-        $this->student = $student;
 
         return $this;
     }
@@ -339,5 +333,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getCompletedEducationLevel(): string
+    {
+        return $this->completedEducationLevel;
+    }
+
+    /**
+     * @param string $completedEducationLevel
+     */
+    public function setCompletedEducationLevel(string $completedEducationLevel): void
+    {
+        $this->completedEducationLevel = $completedEducationLevel;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCompletedEducationUniversityName(): ?string
+    {
+        return $this->completedEducationUniversityName;
+    }
+
+    /**
+     * @param string|null $completedEducationUniversityName
+     */
+    public function setCompletedEducationUniversityName(?string $completedEducationUniversityName): void
+    {
+        $this->completedEducationUniversityName = $completedEducationUniversityName;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCompletedEducationFacultyName(): ?string
+    {
+        return $this->completedEducationFacultyName;
+    }
+
+    /**
+     * @param string|null $completedEducationFacultyName
+     */
+    public function setCompletedEducationFacultyName(?string $completedEducationFacultyName): void
+    {
+        $this->completedEducationFacultyName = $completedEducationFacultyName;
+    }
+
+
+
 }

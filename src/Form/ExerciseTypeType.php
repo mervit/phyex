@@ -32,11 +32,11 @@ class ExerciseTypeType extends AbstractType
                 'delete_empty' => true
             ])
             ->add('instructionVideo', FileType::class, [
+                'required' => $options['require_instruction_video'],
                 'mapped' => false,
-                'required' => false,
                 'constraints' => [
                     new File([
-                        'maxSize' => '20480k',
+                        'maxSize' => '51200k',
                         'mimeTypes' => [
                             'video/mp4'
                         ],
@@ -61,6 +61,9 @@ class ExerciseTypeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ExerciseType::class,
+            'require_instruction_video' => false
         ]);
+
+        $resolver->setAllowedTypes('require_instruction_video', 'bool');
     }
 }

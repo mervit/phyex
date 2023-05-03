@@ -6,6 +6,7 @@ use App\Entity\ExerciseType;
 use App\Entity\ExerciseTypeParam;
 use App\Form\ExerciseTypeParamType;
 use App\Form\ExerciseTypeType;
+use App\Repository\ExerciseRepository;
 use App\Repository\ExerciseTypeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -69,7 +70,7 @@ class ExerciseTypeController extends AbstractController
         ]);
 
         $criteria = new \Doctrine\Common\Collections\Criteria();
-        $criteria->where(\Doctrine\Common\Collections\Criteria::expr()->eq('deleted', false));
+        $criteria->where(\Doctrine\Common\Collections\Criteria::expr()->eq('et.deleted', false));
 
         $filter_form = $filter_form_builder->getForm();
         $filter_form->handleRequest($request);
@@ -101,6 +102,7 @@ class ExerciseTypeController extends AbstractController
     public function edit(
         int $id,
         ExerciseTypeRepository $exerciseTypeRepository,
+        ExerciseRepository $exerciseRepository,
         SluggerInterface $slugger,
         Request $request
     ){
@@ -111,7 +113,16 @@ class ExerciseTypeController extends AbstractController
 
             $this->addFlash('danger', 'ExerciseType does not exists');
 
-            return $this->redirectToRoute('app_exerciseTypes');
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        $count = $exerciseRepository->countByExerciseType($exerciseType);
+        if($count > 0){
+
+            $this->addFlash('danger', 'ExerciseType is now unable to edit');
+
+            return $this->redirectToRoute('app_exercise_types');
 
         }
 
@@ -168,7 +179,7 @@ class ExerciseTypeController extends AbstractController
 
         $exerciseType = new ExerciseType();
 
-        $form = $this->createForm(ExerciseTypeType::class, $exerciseType);
+        $form = $this->createForm(ExerciseTypeType::class, $exerciseType, ['require_instruction_video' => true]);
 
         $form->handleRequest($request);
 
@@ -180,24 +191,21 @@ class ExerciseTypeController extends AbstractController
             /** @var UploadedFile $instructionVideoFile */
             $instructionVideoFile = $form->get('instructionVideo')->getData();
 
-            if ($instructionVideoFile) {
+            $originalFilename = pathinfo($instructionVideoFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$instructionVideoFile->guessExtension();
 
-                $originalFilename = pathinfo($instructionVideoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$instructionVideoFile->guessExtension();
-
-                // Move the file to the directory where instructionVideos are stored
-                try {
-                    $instructionVideoFile->move(
-                        $this->getParameter('relative_uploads_directory') . '/instruction_videos/',
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'File cannot be uploaded');
-                }
-
-                $exerciseType->setInstructionVideo($newFilename);
+            // Move the file to the directory where instructionVideos are stored
+            try {
+                $instructionVideoFile->move(
+                    $this->getParameter('relative_uploads_directory') . '/instruction_videos/',
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $this->addFlash('danger', 'File cannot be uploaded');
             }
+
+            $exerciseType->setInstructionVideo($newFilename);
 
             $exerciseTypeRepository->save($exerciseType, true);
             $this->addFlash('success', 'ExerciseType created');

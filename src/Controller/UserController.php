@@ -163,44 +163,15 @@ class UserController extends AbstractController
                 ]
             ])
             ->add('birthYear', NumberType::class, [
+                'help' => 'Set you birth year. Possible values are from 1980 to 2023.',
                 'html5' => true,
                 'attr' => [
                     'min' => 1850,
                     'max' => date('Y')
                 ]
             ])
-            ->add('yearsOfExperience', NumberType::class, [
-                'html5' => true,
-                'attr' => [
-                    'min' => 0,
-                    'max' => 50
-                ]
-            ])
-            ->add('student', CheckboxType::class, [
-                'required' => false
-            ])
-            ->add('currentEducationLevel', ChoiceType::class, [
-                'choices' => [
-                    'Bc' => 'bc',
-                    'Mgr' => 'mgr',
-                    'None' => ''
-                ]
-            ])
-            ->add('academicYear', NumberType::class, [
-                'required' => false,
-                'html5' => true,
-                'attr' => [
-                    'min' => 1,
-                    'max' => 8
-                ]
-            ])
-            ->add('universityName', TextType::class)
-            ->add('facultyName', TextType::class)
-            ->add('studyProgram', TextType::class, [
-                'required' => false,
-            ])
-            ->add('fieldOfExperience', TextType::class)
             ->add('country', ChoiceType::class, [
+                'help' => 'Select one of the countries.',
                 'choices' => [
                     "Czechia" => 'czech',
                     'Slovakia' => 'slovak',
@@ -209,16 +180,79 @@ class UserController extends AbstractController
                     "Other" => 'other'
                 ]
             ])
+
+            ->add('completedEducationLevel', ChoiceType::class, [
+                'help' => 'Select last completed education level.',
+                'choices' => [
+                    'Bc.' => 'bc',
+                    'Mgr.' => 'mgr',
+                    'Dr.' => 'dr',
+                    'Phd.' => 'phd',
+                    'None' => ''
+                ]
+            ])
+            ->add('completedEducationUniversityName', TextType::class, [
+                'help' => 'Fill name of university where you completed your last education.',
+                'required' => false
+            ])
+            ->add('completedEducationFacultyName', TextType::class, [
+                'help' => 'Fill name of faculty where you completed your last education.',
+                'required' => false
+            ])
+
+            ->add('currentEducationLevel', ChoiceType::class, [
+                'help' => 'If you are currently student please fill education level you currently studying.',
+                'choices' => [
+                    'Bc.' => 'bc',
+                    'Mgr.' => 'mgr',
+                    'Dr.' => 'dr',
+                    'Phd.' => 'phd',
+                    'None' => ''
+                ]
+            ])
+            ->add('studyProgram', TextType::class, [
+                'help' => 'Name of your current study program.',
+                'required' => false,
+            ])
+            ->add('academicYear', NumberType::class, [
+                'help' => 'Set in which year you currently are.',
+                'required' => false,
+                'html5' => true,
+                'attr' => [
+                    'min' => 1,
+                    'max' => 8
+                ]
+            ])
+            ->add('universityName', TextType::class, [
+                'help' => 'Fill name of university you are currently studying.',
+                'required' => false
+            ])
+            ->add('facultyName', TextType::class, [
+                'help' => 'Fill name of faculty you are currently studying.',
+                'required' => false
+            ])
+
+            ->add('fieldOfExperience', TextType::class, [
+                'help' => 'Fill in which field you have some experiences. For example: teaching, sport physiotherapy, post-trauma physiotherapy atc.. '
+            ])
+            ->add('yearsOfExperience', NumberType::class, [
+                'help' => 'Fill number of years of experience you have in that field.',
+                'html5' => true,
+                'attr' => [
+                    'min' => 0,
+                    'max' => 50
+                ]
+            ])
             ->add('courseList', TextareaType::class, [
+                'help' => 'Fill all your completed special courses if you have some.',
                 'required' => false,
             ])
             ->add('favoriteMethod', TextType::class, [
+                'help' => 'If you have some favorite method of physiotherapy please fill the name of it here.',
                 'required' => false,
             ])
-            ->add('stayInTouch', CheckboxType::class, [
-                'required' => false
-            ])
             ->add('currentJobTitle', TextType::class, [
+                'help' => 'If you are currently working in physiotherapy field, please fill the name of you work position.',
                 'required' => false
             ])
             ->add('plainPassword', PasswordType::class, [

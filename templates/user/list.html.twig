@@ -52,7 +52,6 @@
             <td>{{ user.id }}</td>
             <td>{{ user.email }}</td>
             <td>{% if user.verified %}<i class="bi bi-check text-success"></i>{% else %}<i class="bi bi-x text-danger"></i>{% endif %}</td>
-            <td>{% if user.student %}<i class="bi bi-check text-success"></i>{% else %}<i class="bi bi-x text-danger"></i>{% endif %}</td>
             <td>{{ user.country|trans }}</td>
             <td>
                 {% if not user.verified %}<a href="{{ path('app_users_verify', {id: user.id}) }}" class="btn btn-success btn-sm" title="{{ 'Verify'|trans }}" data-tooltip><i class="bi bi-check-circle"></i></a>{% endif %}
