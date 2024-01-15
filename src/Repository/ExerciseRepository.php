@@ -41,10 +41,25 @@ class ExerciseRepository extends ServiceEntityRepository
         }
     }
 
-    public function getRandom(User $user): Exercise {
+    public function getRandom(User $user): ?Exercise {
 
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->innerJoin('e.exerciseType', 'et');
+        $qb->andWhere('et.enabled = 1');
+        $qb->andWhere('et.deleted = 0');
+
+        $qb->innerJoin('et.categories', 'c');
+        if($user->isEvaluateGlobalCategories()){
+            $qb->andWhere('c.id IN (:categories) OR c.global = TRUE');
+        } else {
+            $qb->andWhere('c.id IN (:categories)');
+        }
+        $qb->setParameter('categories', $user->getExerciseTypeCategories());
+
+        return $qb
             ->setMaxResults(1)
+            
             ->addSelect('(SELECT COUNT(uev.id) FROM App\Entity\Evaluation AS uev WHERE uev.user = :user AND uev.exercise = e) AS HIDDEN num_users_evaluations')
             ->addSelect('(SELECT COUNT(ev.id) FROM App\Entity\Evaluation AS ev WHERE ev.exercise = e) AS HIDDEN num_evaluations')
             ->addOrderBy('num_users_evaluations', 'ASC')

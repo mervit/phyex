@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\ExerciseTypeCategory;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -58,6 +60,12 @@ class UserController extends AbstractController
         $filter_form_builder->add('email', TextType::class, [
             'required' => false
         ]);
+        $filter_form_builder->add('category', EntityType::class, [
+            'label' => 'Evaluation categories',
+            'class' => ExerciseTypeCategory::class,
+            'choice_label' => 'name',
+            'required' => false
+        ]);
         $filter_form_builder->add('submit', SubmitType::class, [
             'label' => 'Search',
             'attr' => [
@@ -70,6 +78,7 @@ class UserController extends AbstractController
 
         $filter_form = $filter_form_builder->getForm();
         $filter_form->handleRequest($request);
+        $category = null;
         if($filter_form->isSubmitted() && $filter_form->isValid()){
 
             if($filter_form->get('email')){
@@ -84,11 +93,15 @@ class UserController extends AbstractController
                 }
             }
 
+            if($filter_form->get('category')->getData()){
+                $category = $filter_form->get('category')->getData();
+            }
+
         }
 
-        $max_users = $userRepository->countByCriteria($criteria);
+        $max_users = $userRepository->countByCriteriaAndCategory($category, $criteria);
 
-        $users = $userRepository->findByCriteria($criteria, $order, $rows_on_page, ($page - 1) * $rows_on_page);
+        $users = $userRepository->findByCriteriaAndCategory($category, $criteria, $order, $rows_on_page, ($page - 1) * $rows_on_page);
 
         return $this->render('user/list.html.twig', [
             'filter_form' => $filter_form->createView(),
@@ -155,6 +168,7 @@ class UserController extends AbstractController
             ->add('email', EmailType::class)
             ->add('roles', ChoiceType::class, [
                 'multiple' => true,
+                'required' => false,
                 'choices' => [
                     'Users' => 'ROLE_ADMIN_USERS',
                     'Evaluations' => 'ROLE_ADMIN_EVALUATIONS',
@@ -266,6 +280,21 @@ class UserController extends AbstractController
                         'max' => 4096,
                     ]),
                 ],
+            ])
+            ->add('exerciseTypeCategories', EntityType::class, [
+                'label' => 'Evaluation categories',
+                'class' => ExerciseTypeCategory::class,
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false
+            ])
+            ->add('evaluateGlobalCategories', ChoiceType::class, [
+                'label' => 'Global evaluator',
+                'help' => 'Permission to evaluate exercises in global categories.',
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Save'

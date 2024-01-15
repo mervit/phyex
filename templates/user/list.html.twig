@@ -6,13 +6,16 @@
     <h1 class="mt-3 h2">{{ 'Users'|trans }}</h1>
     {{ form_start(filter_form) }}
     <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             {{ form_row(filter_form.email) }}
         </div>
-        <div class="col-4">
+        <div class="col-3">
             {{ form_row(filter_form.verified) }}
         </div>
-        <div class="col-4 pt-4 text-end">
+        <div class="col-3">
+            {{ form_row(filter_form.category) }}
+        </div>
+        <div class="col-3 pt-4 text-end">
             {{ form_widget(filter_form.submit) }}
         </div>
     </div>
@@ -41,6 +44,7 @@
                 {% endif %}
             </th>
             <th>{{ 'Is verified'|trans }}</th>
+            <th>{{ 'Is universal evaluator'|trans }}</th>
             <th>{{ 'Is student'|trans }}</th>
             <th>{{ 'Country'|trans }}</th>
             <th></th>
@@ -52,6 +56,8 @@
             <td>{{ user.id }}</td>
             <td>{{ user.email }}</td>
             <td>{% if user.verified %}<i class="bi bi-check text-success"></i>{% else %}<i class="bi bi-x text-danger"></i>{% endif %}</td>
+            <td>{% if user.evaluateGlobalCategories %}<i class="bi bi-check text-success"></i>{% else %}<i class="bi bi-x text-danger"></i>{% endif %}</td>
+            <td>{% if user.currentEducationLevel %}<i class="bi bi-check text-success"></i>{% else %}<i class="bi bi-x text-danger"></i>{% endif %}</td>
             <td>{{ user.country|trans }}</td>
             <td>
                 {% if not user.verified %}<a href="{{ path('app_users_verify', {id: user.id}) }}" class="btn btn-success btn-sm" title="{{ 'Verify'|trans }}" data-tooltip><i class="bi bi-check-circle"></i></a>{% endif %}

@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\ExerciseType;
+use App\Entity\ExerciseTypeCategory;
 use App\Entity\ExerciseTypeParam;
 use App\Form\ExerciseTypeParamType;
 use App\Form\ExerciseTypeType;
 use App\Repository\ExerciseRepository;
 use App\Repository\ExerciseTypeRepository;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\ExerciseTypePasswordHasherInterface;
@@ -62,6 +67,22 @@ class ExerciseTypeController extends AbstractController
         $filter_form_builder->add('code', TextType::class, [
             'required' => false
         ]);
+        $filter_form_builder->add('enabled', ChoiceType::class, [
+            'required' => false,
+            'choices' => [
+                'Only enabled' => true,
+                'Only disabled' => false
+            ]
+        ]);
+        $filter_form_builder->add('category', EntityType::class, [
+            'class' => ExerciseTypeCategory::class,
+            'query_builder' => function (EntityRepository $er): QueryBuilder {
+                return $er->createQueryBuilder('etc')
+                    ->andWhere('etc.deleted = 0');
+            },
+            'choice_label' => 'name',
+            'required' => false
+        ]);
         $filter_form_builder->add('submit', SubmitType::class, [
             'label' => 'Search',
             'attr' => [
@@ -74,21 +95,30 @@ class ExerciseTypeController extends AbstractController
 
         $filter_form = $filter_form_builder->getForm();
         $filter_form->handleRequest($request);
+        $category = null;
         if($filter_form->isSubmitted() && $filter_form->isValid()){
 
             if($filter_form->get('name')->getData()){
                 $criteria->andWhere(\Doctrine\Common\Collections\Criteria::expr()->contains('name', $filter_form->get('name')->getData()));
             }
 
+            if($filter_form->get('enabled')->getData() !== null){
+                $criteria->andWhere(\Doctrine\Common\Collections\Criteria::expr()->eq('enabled', $filter_form->get('enabled')->getData()));
+            }
+
             if($filter_form->get('code')->getData()){
                 $criteria->andWhere(\Doctrine\Common\Collections\Criteria::expr()->contains('code', $filter_form->get('code')->getData()));
             }
 
+            if($filter_form->get('category')->getData()){
+                $category = $filter_form->get('category')->getData();
+            }
+
         }
 
-        $max_exerciseTypes = $exerciseTypeRepository->countByCriteria($criteria);
+        $max_exerciseTypes = $exerciseTypeRepository->countByCriteria($criteria, $category);
 
-        $exerciseTypes = $exerciseTypeRepository->findByCriteria($criteria, $order, $rows_on_page, ($page - 1) * $rows_on_page);
+        $exerciseTypes = $exerciseTypeRepository->findByCriteria($criteria, $category, $order, $rows_on_page, ($page - 1) * $rows_on_page);
 
         return $this->render('exercise_type/list.html.twig', [
             'filter_form' => $filter_form->createView(),
@@ -249,6 +279,88 @@ class ExerciseTypeController extends AbstractController
         $exerciseTypeRepository->save($exerciseType, true);
 
         $this->addFlash('success', 'ExerciseType was removed');
+
+        return $this->redirectToRoute('app_exercise_types');
+
+    }
+
+    #[Route('/exercise_type/enable/{id}', name: 'app_exercise_type_enable')]
+    public function enable(
+        int $id,
+        ExerciseTypeRepository $exerciseTypeRepository
+    ){
+
+        $exerciseType = $exerciseTypeRepository->find($id);
+
+        if(!$exerciseType){
+
+            $this->addFlash('danger', 'ExerciseType does not exists');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        if($exerciseType->isDeleted()){
+
+            $this->addFlash('danger', 'ExerciseType is deleted');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        if($exerciseType->isEnabled()){
+
+            $this->addFlash('danger', 'ExerciseType is already enabled');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        $exerciseType->setEnabled(true);
+        $exerciseTypeRepository->save($exerciseType, true);
+
+        $this->addFlash('success', 'ExerciseType was enabled');
+
+        return $this->redirectToRoute('app_exercise_types');
+
+    }
+
+    #[Route('/exercise_type/disable/{id}', name: 'app_exercise_type_disable')]
+    public function disable(
+        int $id,
+        ExerciseTypeRepository $exerciseTypeRepository
+    ){
+
+        $exerciseType = $exerciseTypeRepository->find($id);
+
+        if(!$exerciseType){
+
+            $this->addFlash('danger', 'ExerciseType does not exists');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        if($exerciseType->isDeleted()){
+
+            $this->addFlash('danger', 'ExerciseType is deleted');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        if(!$exerciseType->isEnabled()){
+
+            $this->addFlash('danger', 'ExerciseType is already disabled');
+
+            return $this->redirectToRoute('app_exercise_types');
+
+        }
+
+        $exerciseType->setEnabled(false);
+        $exerciseTypeRepository->save($exerciseType, true);
+
+        $this->addFlash('success', 'ExerciseType was disabled');
 
         return $this->redirectToRoute('app_exercise_types');
 

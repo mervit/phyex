@@ -56,12 +56,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
-    public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
+    public function findByCriteriaAndCategory($category = null, $criteria = null, $orderBy = null, $limit = null, $offset = null){
 
         $qb = $this->createQueryBuilder('u');
 
         if($criteria){
             $qb->addCriteria($criteria);
+        }
+
+        if($category) {
+            $qb->innerJoin('u.exerciseTypeCategories', 'c');
+            $qb->andWhere('c.id = :category');
+            $qb->setParameter('category', $category->getId());
         }
 
         if($orderBy){
@@ -82,9 +88,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     }
 
-    public function countByCriteria($criteria){
+    public function countByCriteriaAndCategory($category = null, $criteria){
 
-        return $this->createQueryBuilder('u')
+        $qb = $this->createQueryBuilder('u');
+
+        if($category) {
+            $qb->innerJoin('u.exerciseTypeCategories', 'c');
+            $qb->andWhere('c.id = :category');
+            $qb->setParameter('category', $category->getId());
+        }
+
+        return $qb
             ->addCriteria($criteria)
             ->select('COUNT(u.id)')
             ->getQuery()

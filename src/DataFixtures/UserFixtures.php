@@ -4,12 +4,13 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture {
+class UserFixtures extends Fixture implements DependentFixtureInterface {
 
     private ObjectManager $manager;
     private Generator $faker;
@@ -41,6 +42,7 @@ class UserFixtures extends Fixture {
         $user->setPassword($this->hasher->hashPassword($user, $password));
         $user->setRoles($roles);
         $user->setIsVerified(true);
+        $user->setEvaluateGlobalCategories(rand(0, 1) === 1);
         $user->setBirthYear(rand(1978,2005));
         $user->setCountry($this->faker->country);
         $user->setCompletedEducationLevel($this->faker->title);
@@ -57,9 +59,20 @@ class UserFixtures extends Fixture {
         $user->setYearsOfExperience(rand(1, 15));
         $user->setUniversityName($this->faker->name);
         $user->setFieldOfExperience($this->faker->name);
+        for($c = 1; $c <= rand(0,3); ++$c) {
+            $exerciseTypeCategory = $this->getReference('ExerciseTypeCategory_' . rand(0, ExerciseTypeCategoryFixtures::LENGTH - 1));
+            $user->addExerciseTypeCategory($exerciseTypeCategory);
+        }
         $this->manager->persist($user);
         return $user;
 
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            ExerciseTypeCategoryFixtures::class
+        ];
     }
 
 }

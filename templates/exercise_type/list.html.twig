@@ -12,7 +12,13 @@
         <div class="col-4">
             {{ form_row(filter_form.code) }}
         </div>
-        <div class="col-4 pt-4 text-end">
+        <div class="col-4">
+            {{ form_row(filter_form.enabled) }}
+        </div>
+        <div class="col-4">
+            {{ form_row(filter_form.category) }}
+        </div>
+        <div class="col-4 offset-4 pt-4 text-end">
             {{ form_widget(filter_form.submit) }}
             <a href="{{ path('app_exercise_type_add') }}" class="btn btn-success mt-2" title="Add new exercise type" data-tooltip data-placement="left"><i class="bi bi-plus"></i></a>
         </div>
@@ -33,6 +39,7 @@
             </th>
             <th>{{ 'Name'|trans }}</th>
             <th>{{ 'Code'|trans }}</th>
+            <th>{{ 'Enabled'|trans }}</th>
             <th>{{ 'Completed exercises'|trans }}</th>
             <th>{{ 'Description'|trans }}</th>
             <th>{{ 'Instruction video'|trans }}</th>
@@ -45,6 +52,7 @@
             <td>{{ exerciseType.0.id }}</td>
             <td>{{ exerciseType.0.name }}</td>
             <td>{{ exerciseType.0.code }}</td>
+            <td>{% if exerciseType.0.enabled %}<i class="bi bi-check"></i>{% else %}<i class="bi bi-x"></i>{% endif %}</td>
             <td>{{ exerciseType.exerciseCount }}</td>
             <td>
                 {% if exerciseType.0.description|length > 35 %}
@@ -59,6 +67,11 @@
             <td>
                 {% if exerciseType.exerciseCount == 0 %}
                 <a href="{{ path('app_exercise_type_edit', {id: exerciseType.0.id}) }}" class="btn btn-primary btn-sm" title="{{ 'Edit'|trans }}" data-tooltip><i class="bi bi-pencil"></i></a>
+                {% endif %}
+                {% if exerciseType.0.enabled %}
+                <a href="{{ path('app_exercise_type_disable', {id: exerciseType.0.id}) }}" class="btn btn-warning btn-sm" title="{{ 'Disable'|trans }}" data-tooltip data-placement="left"><i class="bi bi-x"></i></a>
+                {% else %}
+                <a href="{{ path('app_exercise_type_enable', {id: exerciseType.0.id}) }}" class="btn btn-success btn-sm" title="{{ 'Enable'|trans }}" data-tooltip data-placement="left"><i class="bi bi-check"></i></a>
                 {% endif %}
                 <a href="#" class="btn btn-danger btn-sm" data-tooltip data-toggle="modal" data-target="#promptModal" data-link="{{ path('app_exercise_type_delete', {id: exerciseType.0.id}) }}" title="{{ 'Delete'|trans }}"><i class="bi bi-trash"></i></a>
             </td>

@@ -39,13 +39,19 @@ class ExerciseTypeRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByCriteria($criteria = null, $orderBy = null, $limit = null, $offset = null){
+    public function findByCriteria($criteria = null, $category = null, $orderBy = null, $limit = null, $offset = null){
 
         $qb = $this->createQueryBuilder('et');
         $qb->addSelect('(SELECT COUNT(ex.id) FROM App\\Entity\\Exercise AS ex WHERE ex.exerciseType = et) AS exerciseCount');
 
         if($criteria){
             $qb->addCriteria($criteria);
+        }
+
+        if($category) {
+            $qb->innerJoin('et.categories', 'c');
+            $qb->andWhere('c.id = :category');
+            $qb->setParameter('category', $category->getId());
         }
 
         if($orderBy){
@@ -66,10 +72,31 @@ class ExerciseTypeRepository extends ServiceEntityRepository
 
     }
 
-    public function countByCriteria($criteria){
+    public function findByCategory($category){
 
-        return $this->createQueryBuilder('et')
-            ->addCriteria($criteria)
+        $qb = $this->createQueryBuilder('et');
+        $qb->innerJoin('et.categories', 'c');
+        $qb->andWhere('c.id = :category');
+        $qb->setParameter('category', $category->getId());
+        return $qb->getQuery()->getResult();
+
+    }
+
+    public function countByCriteria($criteria, $category){
+
+        $qb = $this->createQueryBuilder('et');
+
+        if($criteria){
+            $qb->addCriteria($criteria);
+        }
+
+        if($category) {
+            $qb->innerJoin('et.categories', 'c');
+            $qb->andWhere('c.id = :category');
+            $qb->setParameter('category', $category->getId());
+        }
+
+        return $qb
             ->select('COUNT(et.id)')
             ->getQuery()
             ->getOneOrNullResult()[1];

@@ -22,6 +22,7 @@
                         {% if is_granted('ROLE_ADMIN_EVALUATIONS') %}<li{% if app.request.attributes.get('_route') == 'app_evaluations' %} class="active"{% endif %}><a href="{{ path('app_evaluations') }}"><i class="bi bi-clipboard-check"></i> {{ 'Evaluations'|trans }}</a></li>{% endif %}
                         {% if is_granted('ROLE_ADMIN_EXERCISES') %}<li{% if app.request.attributes.get('_route') == 'app_exercises' %} class="active"{% endif %}><a href="{{ path('app_exercises') }}"><i class="bi bi-universal-access"></i> {{ 'Exercises'|trans }}</a></li>{% endif %}
                         {% if is_granted('ROLE_ADMIN_EXERCISE_TYPES') %}<li{% if app.request.attributes.get('_route') == 'app_exercise_types' %} class="active"{% endif %}><a href="{{ path('app_exercise_types') }}"><i class="bi bi-grid-3x2-gap"></i> {{ 'Exercise types'|trans }}</a></li>{% endif %}
+                        {% if is_granted('ROLE_ADMIN_EXERCISE_TYPES') %}<li{% if app.request.attributes.get('_route') == 'app_exercise_type_categories' %} class="active"{% endif %}><a href="{{ path('app_exercise_type_categories') }}"><i class="bi bi-box-fill"></i> {{ 'Exercise type categories'|trans }}</a></li>{% endif %}
                     </ul>
                     <hr />
                     <ul>

@@ -9,13 +9,14 @@ use App\Entity\Image;
 use App\Entity\Exercise;
 use App\Service\FileUploader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 
-class ExerciseFixtures extends Fixture
+class ExerciseFixtures extends Fixture implements DependentFixtureInterface
 {
 
     public function __construct(
@@ -88,6 +89,12 @@ class ExerciseFixtures extends Fixture
                 $exerciseType->setDefaultVideoView($videoViews[rand(0,3)]);
                 $exerciseType->setCode($exerciseTypeName);
 
+
+                for($c = 1; $c <= rand(1,3); ++$c) {
+                    $exerciseTypeCategory = $this->getReference('ExerciseTypeCategory_' . rand(0, ExerciseTypeCategoryFixtures::LENGTH - 1));
+                    $exerciseType->addCategory($exerciseTypeCategory);
+                }
+
                 $randomVideo = $faker->randomElement($availableVideos);
 
                 // Copy video before upload (move)
@@ -141,5 +148,12 @@ class ExerciseFixtures extends Fixture
         // Upload Image
         return $this->fileUploader->upload('videos', new File($targetPath));
 
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            ExerciseTypeCategoryFixtures::class
+        ];
     }
 }

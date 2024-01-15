@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -83,6 +85,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?bool $deleted = false;
+
+    #[ORM\Column]
+    private ?bool $evaluateGlobalCategories = true;
+
+    #[ORM\ManyToMany(targetEntity: ExerciseTypeCategory::class)]
+    private Collection $exerciseTypeCategories;
+
+    public function __construct()
+    {
+        $this->exerciseTypeCategories = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -380,6 +393,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompletedEducationFacultyName(?string $completedEducationFacultyName): void
     {
         $this->completedEducationFacultyName = $completedEducationFacultyName;
+    }
+
+    public function isEvaluateGlobalCategories(): ?bool
+    {
+        return $this->evaluateGlobalCategories;
+    }
+
+    public function setEvaluateGlobalCategories(bool $evaluateGlobalCategories): self
+    {
+        $this->evaluateGlobalCategories = $evaluateGlobalCategories;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExerciseTypeCategory>
+     */
+    public function getExerciseTypeCategories(): Collection
+    {
+        return $this->exerciseTypeCategories;
+    }
+
+    public function addExerciseTypeCategory(ExerciseTypeCategory $exerciseTypeCategory): self
+    {
+        if (!$this->exerciseTypeCategories->contains($exerciseTypeCategory)) {
+            $this->exerciseTypeCategories->add($exerciseTypeCategory);
+        }
+
+        return $this;
+    }
+
+    public function removeExerciseTypeCategory(ExerciseTypeCategory $exerciseTypeCategory): self
+    {
+        $this->exerciseTypeCategories->removeElement($exerciseTypeCategory);
+
+        return $this;
     }
 
 

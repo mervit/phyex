@@ -2,6 +2,10 @@
 namespace App\Form;
 
 use App\Entity\ExerciseType;
+use App\Entity\ExerciseTypeCategory;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -22,6 +26,12 @@ class ExerciseTypeType extends AbstractType
             ->add('name', TextType::class)
             ->add('code', TextType::class)
             ->add('description', TextareaType::class)
+            ->add('enabled', ChoiceType::class, [
+                'choices' => [
+                    'Yes' => true,
+                    'No' => false
+                ]
+            ])
             ->add('exerciseTypeParams', CollectionType::class, [
                 'entry_type' => ExerciseTypeParamType::class,
                 'label' => false,
@@ -30,6 +40,16 @@ class ExerciseTypeType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => ExerciseTypeCategory::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('etc')
+                        ->andWhere('etc.deleted = 0');
+                },
+                'choice_label' => 'name',
+                'multiple' => true,
+                'required' => false
             ])
             ->add('instructionVideo', FileType::class, [
                 'required' => $options['require_instruction_video'],

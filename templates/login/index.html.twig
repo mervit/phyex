@@ -33,6 +33,16 @@
                             <div class="alert alert-warning">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                         {% endif %}
 
+                        {% if app.session.flashbag.peekAll|length > 0 %}
+                            {% for type, messages in app.session.flashbag.all %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ type ? type : '' }}">
+                                        {{ message|trans({}, domain|default('messages')) }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+
                         <form action="{{ path('app_login') }}" method="post">
 
                             <div class="mb-3">

@@ -37,9 +37,16 @@ class ExerciseType
     #[ORM\Column]
     private ?bool $deleted = false;
 
+    #[ORM\Column]
+    private ?bool $enabled = false;
+
+    #[ORM\ManyToMany(targetEntity: ExerciseTypeCategory::class, inversedBy: 'exerciseTypes')]
+    private Collection $categories;
+
     public function __construct()
     {
         $this->exerciseTypeParams = new ArrayCollection();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +152,42 @@ class ExerciseType
     public function setDeleted(bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExerciseTypeCategory>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(ExerciseTypeCategory $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(ExerciseTypeCategory $category): self
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
