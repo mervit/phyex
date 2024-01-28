@@ -65,7 +65,7 @@
                 <a href="#" class="btn btn-success btn-sm" data-toggle="modal" data-target="#instructionVideoModal" data-video="{{ '/' ~ relative_uploads_directory ~ 'instruction_videos/' ~ exerciseType.0.instructionVideo }}" title="{{ 'Play instruction video'|trans }}" data-tooltip><i class="bi bi-play"></i></a>
             </td>
             <td>
-                {% if exerciseType.exerciseCount == 0 %}
+                {% if exerciseType.evaluationCount == 0 %}
                 <a href="{{ path('app_exercise_type_edit', {id: exerciseType.0.id}) }}" class="btn btn-primary btn-sm" title="{{ 'Edit'|trans }}" data-tooltip><i class="bi bi-pencil"></i></a>
                 {% endif %}
                 {% if exerciseType.0.enabled %}

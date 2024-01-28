@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Evaluation;
+use App\Entity\ExerciseType;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -131,6 +132,16 @@ class EvaluationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()[1];
 
+    }
+
+    public function countByExerciseType(ExerciseType $exerciseType) {
+        return $this->createQueryBuilder('ev')
+            ->select('COUNT(ev.id)')
+            ->innerJoin('ev.exercise', 'ex')
+            ->where('ex.exerciseType = :exerciseType')
+            ->setParameter('exerciseType', $exerciseType)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

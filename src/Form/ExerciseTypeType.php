@@ -23,14 +23,21 @@ class ExerciseTypeType extends AbstractType
     {
 
         $builder
-            ->add('name', TextType::class)
-            ->add('code', TextType::class)
-            ->add('description', TextareaType::class)
+            ->add('name', TextType::class, [
+                'disabled' => !$options['enable_description_edit']
+            ])
+            ->add('code', TextType::class, [
+                'disabled' => !$options['enable_description_edit']
+            ])
+            ->add('description', TextareaType::class, [
+                'disabled' => !$options['enable_description_edit']
+            ])
             ->add('enabled', ChoiceType::class, [
                 'choices' => [
                     'Yes' => true,
                     'No' => false
-                ]
+                ],
+                'disabled' => !$options['enable_description_edit']
             ])
             ->add('exerciseTypeParams', CollectionType::class, [
                 'entry_type' => ExerciseTypeParamType::class,
@@ -54,6 +61,7 @@ class ExerciseTypeType extends AbstractType
             ->add('instructionVideo', FileType::class, [
                 'required' => $options['require_instruction_video'],
                 'mapped' => false,
+                'disabled' => !$options['enable_description_edit'],
                 'constraints' => [
                     new File([
                         'maxSize' => '51200k',
@@ -81,9 +89,11 @@ class ExerciseTypeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ExerciseType::class,
-            'require_instruction_video' => false
+            'require_instruction_video' => false,
+            'enable_description_edit' => true
         ]);
 
         $resolver->setAllowedTypes('require_instruction_video', 'bool');
+        $resolver->setAllowedTypes('enable_description_edit', 'bool');
     }
 }

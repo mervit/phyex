@@ -7,6 +7,7 @@ use App\Entity\ExerciseTypeCategory;
 use App\Entity\ExerciseTypeParam;
 use App\Form\ExerciseTypeParamType;
 use App\Form\ExerciseTypeType;
+use App\Repository\EvaluationRepository;
 use App\Repository\ExerciseRepository;
 use App\Repository\ExerciseTypeRepository;
 use Doctrine\ORM\EntityRepository;
@@ -133,6 +134,7 @@ class ExerciseTypeController extends AbstractController
         int $id,
         ExerciseTypeRepository $exerciseTypeRepository,
         ExerciseRepository $exerciseRepository,
+        EvaluationRepository $evaluationRepository,
         SluggerInterface $slugger,
         Request $request
     ){
@@ -147,7 +149,8 @@ class ExerciseTypeController extends AbstractController
 
         }
 
-        $count = $exerciseRepository->countByExerciseType($exerciseType);
+        // Todo count by evaluations
+        $count = $evaluationRepository->countByExerciseType($exerciseType);
         if($count > 0){
 
             $this->addFlash('danger', 'ExerciseType is now unable to edit');
@@ -156,7 +159,11 @@ class ExerciseTypeController extends AbstractController
 
         }
 
-        $form = $this->createForm(ExerciseTypeType::class, $exerciseType);
+        $enableDescriptionEdit = $exerciseRepository->countByExerciseType($exerciseType) === 0;
+
+        $form = $this->createForm(ExerciseTypeType::class, $exerciseType,[
+            'enable_description_edit' => $enableDescriptionEdit
+        ]);
 
         $form->handleRequest($request);
 

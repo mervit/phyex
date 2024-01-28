@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Evaluation;
+use App\Entity\Exercise;
 use App\Entity\ExerciseType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -42,7 +45,12 @@ class ExerciseTypeRepository extends ServiceEntityRepository
     public function findByCriteria($criteria = null, $category = null, $orderBy = null, $limit = null, $offset = null){
 
         $qb = $this->createQueryBuilder('et');
-        $qb->addSelect('(SELECT COUNT(ex.id) FROM App\\Entity\\Exercise AS ex WHERE ex.exerciseType = et) AS exerciseCount');
+        //$qb->addSelect('(SELECT COUNT(ex.id) FROM App\\Entity\\Exercise AS ex WHERE ex.exerciseType = et) AS exerciseCount');
+        //$qb->addSelect('(SELECT COUNT(`ev`.`id`) FROM App\\Entity\\Evaluation AS ev WHERE (SELECT `e`.`exerciseType` FROM App\\Entity\\Exercise AS e WHERE `e`.`evaluation` = ev ) = et) AS evaluationCount');
+        $qb->leftJoin(Exercise::class, 'e', Join::WITH, "e.exerciseType = et.id");
+        $qb->addSelect("COUNT(e.id) AS exerciseCount");
+        $qb->leftJoin(Evaluation::class, 'ev', Join::WITH, "ev.exercise = e.id");
+        $qb->addSelect("COUNT(ev.id) AS evaluationCount");
 
         if($criteria){
             $qb->addCriteria($criteria);
@@ -67,6 +75,8 @@ class ExerciseTypeRepository extends ServiceEntityRepository
         if($offset) {
             $qb->setFirstResult($offset);
         }
+
+        $qb->groupBy('et.id');
 
         return $qb->getQuery()->getResult();
 
