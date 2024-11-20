@@ -13,16 +13,16 @@
                 {{ exercise.exerciseType.description }}
                 <a href="#" data-toggle="modal" data-target="#instructionVideoModal" data-video="{{ '/' ~ relative_uploads_directory ~ 'instruction_videos/' ~ exercise.exerciseType.instructionVideo }}" title="{{ 'play instruction video'|trans }}" data-tooltip>{{ 'Play instruction video'|trans }} &raquo;</a>
             </p>
-            <video id="videoFront" class="w-100 video">
+            <video id="videoFront" class="w-100 video" autoplay loop muted playsinline>
                 <source src="{{ '/' ~ relative_uploads_directory ~ 'videos/' ~ exercise.videoFront }}">
             </video>
-            <video id="videoSide" class="w-100 video d-none">
+            <video id="videoSide" class="w-100 video d-none" autoplay loop muted playsinline>
                 <source src="{{ '/' ~ relative_uploads_directory ~ 'videos/' ~ exercise.videoSide }}">
             </video>
-            <video id="videoMidLeft" class="w-100 video d-none">
+            <video id="videoMidLeft" class="w-100 video d-none" autoplay loop muted playsinline>
                 <source src="{{ '/' ~ relative_uploads_directory ~ 'videos/' ~ exercise.videoMidLeft }}">
             </video>
-            <video id="videoMidRight" class="w-100 video d-none">
+            <video id="videoMidRight" class="w-100 video d-none" autoplay loop muted playsinline>
                 <source src="{{ '/' ~ relative_uploads_directory ~ 'videos/' ~ exercise.videoMidRight }}">
             </video>
 
