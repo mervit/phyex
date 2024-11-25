@@ -87,13 +87,17 @@
 
     {{ parent() }}
 
+    <script type="text/javascript">
+        var numberOfStars = {{ number_of_stars }};
+    </script>
+
     {% if exercise %}
 
     <script type="text/javascript">
 
         function areAllParametersFilled(){
 
-            const enabledValues = ['1', '2', '3'];
+            const enabledValues = {{ range(1, number_of_stars)|map(i => i ~ '')|json_encode|raw }};
 
             let params = document.querySelectorAll('[type="text"]');
             for( let i = 0; i < params.length; ++i){
@@ -117,33 +121,20 @@
 
         function changeStars(el, stars){
 
-            var OneStar = el.getElementsByClassName('oneStar').item(0).getElementsByTagName('i').item(0),
-                TwoStars = el.getElementsByClassName('twoStars').item(0).getElementsByTagName('i').item(0),
-                ThreeStars = el.getElementsByClassName('threeStars').item(0).getElementsByTagName('i').item(0);
-
-            switch (stars) {
-                case 0:
-                    OneStar.setAttribute('class', 'bi bi-star');
-                    TwoStars.setAttribute('class', 'bi bi-star');
-                    ThreeStars.setAttribute('class', 'bi bi-star');
-                    break;
-                case 1:
-                    OneStar.setAttribute('class', 'bi bi-star-fill');
-                    TwoStars.setAttribute('class', 'bi bi-star');
-                    ThreeStars.setAttribute('class', 'bi bi-star');
-                    break;
-                case 2:
-                    OneStar.setAttribute('class', 'bi bi-star-fill');
-                    TwoStars.setAttribute('class', 'bi bi-star-fill');
-                    ThreeStars.setAttribute('class', 'bi bi-star');
-                    break;
-                case 3:
-                    OneStar.setAttribute('class', 'bi bi-star-fill');
-                    TwoStars.setAttribute('class', 'bi bi-star-fill');
-                    ThreeStars.setAttribute('class', 'bi bi-star-fill');
-                    break;
+            for( i = 1; i <= numberOfStars; ++i)
+            {
+                let starElement = el.querySelector("[data-star='" + i + "']").getElementsByTagName('i').item(0);
+                if( i <= stars) {
+                    starElement.setAttribute('class', 'bi bi-star-fill');
+                } else {
+                    starElement.setAttribute('class', 'bi bi-star');
+                }
             }
 
+        }
+
+        function getStarElement(inputIndex, starIndex){
+            return document.getElementById('evaluationForm').getElementsByTagName('input').item(inputIndex).parentNode.querySelector("[data-star='" + starIndex + "']");
         }
 
         var inputForStars = document.getElementById('evaluationForm').getElementsByTagName('input');
@@ -153,67 +144,39 @@
                 continue;
             }
 
-            inputForStars[e].parentNode.innerHTML = inputForStars[e].parentNode.innerHTML +
-                '<div class="stars">' +
-                '<a href="#" class="star oneStar" title="Bad"><i class="bi bi-star"></i></a>' +
-                '<a href="#" class="star twoStars" title="OK"><i class="bi bi-star"></i></a>' +
-                '<a href="#" class="star threeStars" title="Good"><i class="bi bi-star"></i></a>' +
-                '</div>'
-            ;
+            // Create HTML of stars and append it to document
+            inputForStars[e].parentNode.innerHTML += '<div class="stars">';
+            for ( i = 1; i <= numberOfStars; ++i)
+            {
+                inputForStars[e].parentNode.innerHTML +=
+                    '<a href="#" data-star="' + i + '" class="star" title="' + i + ' star">' +
+                    '<i class="bi bi-star"></i>' +
+                    '</a>' ;
+            }
+            inputForStars[e].parentNode.innerHTML += '</div>';
             inputForStars[e].classList.add('d-none');
 
-            let oneStar = inputForStars[e].parentNode.getElementsByClassName('oneStar').item(0),
-                twoStars = inputForStars[e].parentNode.getElementsByClassName('twoStars').item(0),
-                threeStars = inputForStars[e].parentNode.getElementsByClassName('threeStars').item(0);
-
-            // Tooltips
-            $(oneStar).tooltip();
-            $(twoStars).tooltip();
-            $(threeStars).tooltip();
-
-            oneStar.addEventListener('mouseover', function(){
-                    changeStars(this.parentNode, 1);
-            });
-            oneStar.addEventListener('click', function(e){
-                this.parentNode.parentNode.getElementsByTagName('input').item(0).value = 1;
-                if(areAllParametersFilled()){
-                    document.querySelectorAll('[type="submit"]').item(0).removeAttribute('disabled');
-                }
-                e.stopPropagation();
-                e.preventDefault();
-            });
-            oneStar.addEventListener('mouseout', function(){
-                changeStars(this.parentNode, parseInt(this.parentNode.parentNode.getElementsByTagName('input').item(0).value));
-            });
-            twoStars.addEventListener('mouseover', function(){
-                changeStars(this.parentNode, 2);
-            });
-            twoStars.addEventListener('click', function(e){
-                this.parentNode.parentNode.getElementsByTagName('input').item(0).value = 2;
-                if(areAllParametersFilled()){
-                    document.querySelectorAll('[type="submit"]').item(0).removeAttribute('disabled');
-                }
-                e.stopPropagation();
-                e.preventDefault();
-            });
-            twoStars.addEventListener('mouseout', function(){
-                changeStars(this.parentNode, parseInt(this.parentNode.parentNode.getElementsByTagName('input').item(0).value));
-            });
-            threeStars.addEventListener('mouseover', function(){
-                changeStars(this.parentNode, 3);
-            });
-            threeStars.addEventListener('click', function(e){
-                this.parentNode.parentNode.getElementsByTagName('input').item(0).value = 3;
-                if(areAllParametersFilled()){
-                    document.querySelectorAll('[type="submit"]').item(0).removeAttribute('disabled');
-                }
-                e.stopPropagation();
-                e.preventDefault();
-            });
-            threeStars.addEventListener('mouseout', function(){
-                changeStars(this.parentNode, parseInt(this.parentNode.parentNode.getElementsByTagName('input').item(0).value));
-            });
-
+            // Create event trigger for each star
+            for ( i = 1; i <= numberOfStars; ++i)
+            {
+                let starIndex = i;
+                let starElement = getStarElement(e, starIndex);
+                //$(starElement).tooltip();
+                starElement.addEventListener('mouseover', function(){
+                    changeStars(this.parentNode, starIndex);
+                });
+                starElement.addEventListener('click', function(e){
+                    e.currentTarget.parentNode.getElementsByTagName('input').item(0).value = starIndex;
+                    if(areAllParametersFilled()){
+                        document.querySelectorAll('[type="submit"]').item(0).removeAttribute('disabled');
+                    }
+                    e.stopPropagation();
+                    e.preventDefault();
+                });
+                starElement.addEventListener('mouseout', function(e){
+                    changeStars(e.currentTarget.parentNode, parseInt(e.currentTarget.parentNode.getElementsByTagName('input').item(0).value));
+                });
+            }
 
 
         }

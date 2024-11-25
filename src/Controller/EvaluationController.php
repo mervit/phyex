@@ -112,7 +112,8 @@ class EvaluationController extends AbstractController
 
         return $this->render('evaluation/index.html.twig', [
             'exercise' => $exercise,
-            'evaluationForm' => $formBuilder->getForm()
+            'evaluationForm' => $formBuilder->getForm(),
+            'number_of_stars' => $this->getParameter('number_of_stars')
         ]);
     }
 

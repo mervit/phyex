@@ -6,6 +6,7 @@
 parameters:
     relative_uploads_directory: 'uploads/'
     uploads_directory: 'public/%relative_uploads_directory%'
+    number_of_stars: 5
 
 services:
     # default configuration for services in *this* file
