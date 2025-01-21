@@ -52,9 +52,18 @@
                 </div>
             </div>
             <h2 class="h3">{{ 'Evaluation'|trans }}</h2>
+            {{ form_start(evaluationForm) }}
             <div id="evaluationForm">
-            {{ form(evaluationForm) }}
+            {% for child in evaluationForm %}
+                {% if child.vars.name starts with 'param' %}
+                    <div class="mb-3">
+                        {{ form_label(child) }}
+                        {{ form_widget(child) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
             </div>
+            {{ form_end(evaluationForm) }}
         </div>
     </div>
 
@@ -89,6 +98,10 @@
 
     <script type="text/javascript">
         var numberOfStars = {{ number_of_stars }};
+        var starsText = {};
+        {% for i in range(1, number_of_stars) %}{% if (number_of_stars ~ '.' ~ i)|trans({}, 'evaluation_stars') != (number_of_stars ~ '.' ~ i) %}
+        starsText[{{ i }}] = '{{ (number_of_stars ~ '.' ~ i)|trans({}, 'evaluation_stars') }}';
+        {% endif %}{% endfor %}
     </script>
 
     {% if exercise %}
@@ -149,9 +162,10 @@
             for ( i = 1; i <= numberOfStars; ++i)
             {
                 inputForStars[e].parentNode.innerHTML +=
-                    '<a href="#" data-star="' + i + '" class="star" title="' + i + ' star">' +
-                    '<i class="bi bi-star"></i>' +
-                    '</a>' ;
+                    '<a href="#" data-star="' + i + '" class="star" ' +
+                    (typeof starsText[i] !== 'undefined' ? ('title="' + starsText[i] + '"') : ('title="' + i + ' star"')) +
+                    '><i class="bi bi-star"></i>' +
+                    '</a>';
             }
             inputForStars[e].parentNode.innerHTML += '</div>';
             inputForStars[e].classList.add('d-none');
@@ -161,7 +175,7 @@
             {
                 let starIndex = i;
                 let starElement = getStarElement(e, starIndex);
-                //$(starElement).tooltip();
+                $(starElement).tooltip();
                 starElement.addEventListener('mouseover', function(){
                     changeStars(this.parentNode, starIndex);
                 });

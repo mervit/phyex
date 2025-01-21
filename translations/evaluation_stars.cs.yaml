@@ -1,0 +1,10 @@
+3:
+  1: 'Špatné'
+  2: 'Dobré'
+  3: 'Výborné'
+5:
+  1: 'Selhání'
+  2: 'Nedostatečné'
+  3: "Dostatečné"
+  4: 'Dobré'
+  5: 'Ideální'

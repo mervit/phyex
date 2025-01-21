@@ -43,7 +43,7 @@ class EvaluationController extends AbstractController
                 $previousForm->add('param' . $param->getId(), NumberType::class, [
                     'data' => '0',
                     'constraints' => [
-                        new EqualTo([1, 2, 3])
+                        new EqualTo(range(1, $this->getParameter('number_of_stars')))
                     ]
                 ]);
             }
@@ -91,7 +91,7 @@ class EvaluationController extends AbstractController
                     'label' => $param->getName(),
                     'data' => '0',
                     'constraints' => [
-                        new EqualTo([1, 2, 3])
+                        new EqualTo(range(1, $this->getParameter('number_of_stars')))
                     ]
                 ]);
             }

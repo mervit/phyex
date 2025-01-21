@@ -82,6 +82,11 @@ $card-border-color: #000;
     }
 }
 
+#evaluationForm {
+    overflow-y: auto;
+    max-height: 300px;
+}
+
 #dashboard {
     .card {
         .lh-1 {

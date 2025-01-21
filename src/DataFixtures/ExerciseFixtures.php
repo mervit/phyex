@@ -107,7 +107,7 @@ class ExerciseFixtures extends Fixture implements DependentFixtureInterface
 
 
                 // Exercise type params
-                for ($p = 0; $p < rand(3, 5); $p++){
+                for ($p = 0; $p < rand(13, 25); $p++){
 
                     $exerciseTypeParam = new ExerciseTypeParam();
                     $exerciseTypeParam->setName($faker->name);
